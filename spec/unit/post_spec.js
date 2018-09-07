@@ -1,5 +1,6 @@
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
+const Post = require("../../src/db/models").Post;
 
 describe("Post", () => {
 
@@ -56,6 +57,45 @@ describe("#create()", () => {
     });
 
   });
+
+describe("#setTopic()", () => {
+
+    it("should associate a topic and a post together", (done) => {
+
+      Topic.create({
+        title: "Challenges of interstellar travel",
+        description: "1. The Wi-Fi is terrible"
+      })
+      .then((newTopic) => {
+
+        expect(this.post.topicId).toBe(this.topic.id);
+
+        this.post.setTopic(newTopic)
+        .then((post) => {
+
+          expect(post.topicId).toBe(newTopic.id);
+          done();
+
+        });
+      })
+    });
+
+  });
+
+describe("#getTopic()", () => {
+
+    it("should return the associated topic", (done) => {
+
+      this.post.getTopic()
+      .then((associatedTopic) => {
+        expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
+        done();
+      });
+
+    });
+
+  });
+
 
 
 });
