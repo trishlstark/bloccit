@@ -81,15 +81,16 @@ describe("routes : topics", () => {
       });
       });   
       
-  describe("GET /topics/:id", () => {
+    describe("GET /topics/:id", () => {
 
-      it("should render a view with the selected topic", (done) => {
-      request.get(`${base}${this.topic.id}`, (err, res, body) => {
-          expect(err).toBeNull();
-          expect(body).toContain("JS Frameworks");
-          done();
+        it("should render a view with the selected topic", (done) => {
+          request.get(`${base}${this.topic.id}`, (err, res, body) => {
+            expect(err).toBeNull();
+            expect(body).toContain("JS Frameworks");
+            done();
           });
-        });   
+        });
+    
       });
 
   describe("POST /topics/:id/destroy", () => {
@@ -112,7 +113,7 @@ describe("routes : topics", () => {
       });
    });
 
-  describe("GET /topics/:id/edit", () => {
+   describe("GET /topics/:id/edit", () => {
 
     it("should render a view with an edit topic form", (done) => {
       request.get(`${base}${this.topic.id}/edit`, (err, res, body) => {
@@ -122,6 +123,7 @@ describe("routes : topics", () => {
         done();
       });
     });
+
   });
 
   describe("POST /topics/:id/update", () => {

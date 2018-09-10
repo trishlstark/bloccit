@@ -14,13 +14,4 @@ describe("routes : static", () => {
         });
     });
 
-    describe("GET /about", () => {
-      it("should have 'About Us' in the body of the response", (done) => {
-          request.get(base, (err, res, body) => {
-              expect(body).toContain("About Us");
-
-              done();
-          });
-      });
-  });
 });
