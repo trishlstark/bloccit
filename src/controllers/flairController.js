@@ -10,7 +10,8 @@ module.exports = {
         let newflair= {
           title: req.body.name,
           body: req.body.color,
-          postId: req.params.postId
+          postId: req.params.postId,
+          userId: req.user.id
         };
         flairQueries.addflair(newflair, (err, flair) => {
           if(err){

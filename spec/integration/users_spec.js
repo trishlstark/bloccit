@@ -1,6 +1,6 @@
 const request = require("request");
 const server = require("../../src/server");
-const base = "http://localhost:3000/users/";
+const base = "http://localhost:3000/users";
 const User = require("../../src/db/models").User;
 const sequelize = require("../../src/db/models/index").sequelize;
 
@@ -22,7 +22,7 @@ describe("routes : users", () => {
   describe("GET /users/sign_up", () => {
 
     it("should render a view with a sign up form", (done) => {
-      request.get(`${base}sign_up`, (err, res, body) => {
+      request.get(`${base}/sign_up`, (err, res, body) => {
         expect(err).toBeNull();
         expect(body).toContain("Sign up");
         done();
@@ -48,6 +48,7 @@ describe("routes : users", () => {
     
               User.findOne({where: {email: "user@example.com"}})
               .then((user) => {
+                expect(user).not.toBe(null);
                 expect(user.email).toBe("user@example.com");
                 expect(user.id).toBe(1);
                 done();
@@ -88,7 +89,7 @@ describe("routes : users", () => {
 
   describe("GET /users/sign_in", () => {
     it("should render a view with a sign in form", (done) =>{
-      request.get(`${base}sign_in`, (err, res, body) => {
+      request.get(`${base}/sign_in`, (err, res, body) => {
         expect(err).toBeNull();
         expect(body).toContain("Sign in");
         done();
