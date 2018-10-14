@@ -36,6 +36,11 @@
       as: "flairs"
     });
 
+    Post.hasMany(models.Comment, {
+     foreignKey: "postId",
+     as: "comments"
+   });
+
    };
    return Post;
  };
