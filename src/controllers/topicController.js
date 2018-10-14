@@ -31,26 +31,25 @@ module.exports = {
 
   create(req, res, next){
 
-      const authorized = new Authorizer(req.user).create();
-     
-          if(authorized) {
-            let newTopic = {
-              title: req.body.title,
-              description: req.body.description
-            };
-            topicQueries.addTopic(newTopic, (err, topic) => {
-              if(err){
-                res.redirect(500, "topics/new");
-              } else {
-                res.redirect(303, `/topics/${topic.id}`);
-              }
-            });
-          } else {
-     
-            req.flash("notice", "You are not authorized to do that.");
-            res.redirect("/topics");
-          }
-        },
+     const authorized = new Authorizer(req.user).create();
+
+     if(authorized) {
+       let newTopic = {
+         title: req.body.title,
+         description: req.body.description
+       };
+       topicQueries.addTopic(newTopic, (err, topic) => {
+         if(err){
+           res.redirect(500, "topics/new");
+         } else {
+           res.redirect(303, `/topics/${topic.id}`);
+         }
+       });
+     } else {
+       req.flash("notice", "You are not authorized to do that.");
+       res.redirect("/topics");
+     }
+   },
 
   show(req, res, next){
       
@@ -67,7 +66,8 @@ module.exports = {
       
           topicQueries.deleteTopic(req, (err, topic) => {
             if(err){
-              res.redirect(err, `/topics/${req.params.id}`)
+              var error = Number.isInteger(err) ? err : 500;
+              res.redirect(error, `/topics/${req.params.id}`)
             } else {
               res.redirect(303, "/topics")
             }

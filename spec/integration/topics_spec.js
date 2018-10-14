@@ -133,6 +133,9 @@ describe("routes : topics", () => {
              expect(topics.length).toBe(topicCountBeforeDelete - 1);
              done();
            })
+           .catch((err) => { 
+            done();
+            });
 
          });
        });
@@ -273,6 +276,9 @@ describe("routes : topics", () => {
              expect(topics.length).toBe(topicCountBeforeDelete);
              done();
            })
+           .catch((err) => { 
+          done();
+          });
 
          });
        });
