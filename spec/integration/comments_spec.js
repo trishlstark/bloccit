@@ -185,7 +185,6 @@ describe("guest attempting to perform CRUD actions for Comment", () => {
          Comment.all()
          .then((comments) => {
            const commentCountBeforeDelete = comments.length;
-
            expect(commentCountBeforeDelete).toBe(1);
 
            request.post(

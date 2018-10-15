@@ -21,5 +21,7 @@ module.exports = {
       app.use(postRoutes);
       app.use(flairRoutes);
       app.use(userRoutes);
+      app.use(commentRoutes);
+
   }
 }
