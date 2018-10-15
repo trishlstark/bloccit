@@ -166,7 +166,6 @@ describe("guest attempting to perform CRUD actions for Comment", () => {
            (err, res, body) => {
              Comment.findOne({where: {body: "This comment is amazing!"}})
              .then((comment) => {
-               expect(comment).not.toBeNull();
                expect(comment.body).toBe("This comment is amazing!");
                expect(comment.id).not.toBeNull();
                done();
@@ -206,6 +205,101 @@ describe("guest attempting to perform CRUD actions for Comment", () => {
        });
 
      });
+
+    //test to make sure memember cannot delete another members comment
+
+    describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+      beforeEach((done) => {
+        User.create({
+          email: "iamgroot@example.com",
+          password: "78910",
+          role: "member"
+        })
+        .then((user) => {
+        request.get({
+          url: "http://localhost:3000/auth/fake",
+          form: {
+              role: user.role,     
+              userId: user.id,
+              email: user.email
+          }
+        },
+        (err, res, body) => {
+          done();
+            }
+          );
+        });
+      });
+       
+       it("should not delete another members comment", (done) => {
+        Comment.all()
+        .then((comments) => {
+          
+          const commentCountBeforeDelete = comments.length;
+          expect(commentCountBeforeDelete).toBe(1);
+          
+          request.post(
+            `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+            (err, res, body) => {
+              expect(res.statusCode).toBe(401);
+              Comment.all()
+              .then((comments) => {
+                expect(err).toBeNull();
+                expect(comments.length).toBe(commentCountBeforeDelete);
+                done();
+                })
+              }
+            );
+          })
+        });
+
+    //Test to make sure admin can delete other members comments
+    describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+      beforeEach((done) => {
+        User.create({
+          email: "admin@example.com",
+          password: "123456",
+          role: "admin"
+        })
+        .then((user) => {
+          request.get({         
+            url: "http://localhost:3000/auth/fake",
+            form: {
+              role: user.role,     
+              userId: user.id,
+              email: user.email
+            }
+          },
+            (err, res, body) => {
+              done();
+            }
+          );
+        });
+      });
+       
+       it("should delete another members comment", (done) => {
+        Comment.all()
+        .then((comments) => {
+          
+          const commentCountBeforeDelete = comments.length;
+          expect(commentCountBeforeDelete).toBe(1);
+          
+          request.post(
+            `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+            (err, res, body) => {
+              expect(res.statusCode).toBe(302);
+              Comment.all()
+              .then((comments) => {
+                expect(err).toBeNull();
+                expect(comments.length).toBe(commentCountBeforeDelete - 1);
+                done();
+               })
+             }
+           );
+         });
+       });
+     });
+   });
 
    }); //end context for signed in user
 
