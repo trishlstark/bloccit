@@ -21,7 +21,7 @@
    Post.associate = function(models) {
      // associations can be defined here
 
-     Post.belongsTo(models.Topic, {
+    Post.belongsTo(models.Topic, {
        foreignKey: "topicId",
        onDelete: "CASCADE"
      });
@@ -46,6 +46,20 @@
      as: "votes"
    });
 
+
+   Post.hasMany(models.Favorite, {
+     foreignKey: "postId",
+     as: "favorites"
+   });
+
+   Post.afterCreate((post, callback) => {
+     return models.Favorite.create({
+       userId: post.userId,
+       postId: post.id
+     });
+   });
+ 
+
    };
 
 
@@ -63,6 +77,12 @@
     Post.prototype.hasDownvoteFor = function(userId){
       if(this.votes.userId == userId && this.votes.value === -1) return true
     };
+
+    Post.prototype.getFavoriteFor = function(userId){
+     return this.favorites.find((favorite) => { return favorite.userId == userId });
+   };
+
+
 
    return Post;
  };
