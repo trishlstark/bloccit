@@ -2,6 +2,7 @@ const User = require("./models").User;
 const bcrypt = require("bcryptjs");
 const Post = require("./models").Post;
 const Comment = require("./models").Comment;
+const Favorite = require("./models").Favorite;
 
 module.exports = {
   createUser(newUser, callback){
@@ -24,19 +25,28 @@ module.exports = {
     let result = {};
     User.findById(id)
     .then((user) => {
-   
-       if(!user) {
+      if(!user) {
         callback(404);
       } else {
         result["user"] = user;
-        Post.scope({method: ["lastFiveFor", id]}).all()
+      
+      Post.scope({method: ["lastFiveFor", id]}).all()
         .then((posts) => {
           result["posts"] = posts;
-          Comment.scope({method: ["lastFiveFor", id]}).all()
+      
+      Comment.scope({method: ["lastFiveFor", id]}).all()
           .then((comments) => {
- 
-             result["comments"] = comments;
-            callback(null, result);
+            result["comments"] = comments;
+      
+      Favorite.scope({method: ["favoritePosts", id]}).all()
+            .then((favorites) => {
+              result["favorites"] = favorites;
+               
+               callback(null, result);
+            })
+            .catch((err) => {
+              callback(err);
+            })
           })
           .catch((err) => {
             callback(err);
@@ -45,4 +55,7 @@ module.exports = {
       }
     })
   }
+ 
+  
+
 }
